@@ -1,5 +1,13 @@
-import React,{FormEvent, useRef,useState} from 'react';
+import React,{useState,useEffect,useRef} from 'react';
 import Modal from 'react-modal';
+import { useForm, SubmitHandler } from "react-hook-form";
+
+interface FormValues {
+  title: string;
+  description: string;
+  supervisor: string;
+  date: string;
+};
 
 const customStyles = {
   content: {
@@ -18,26 +26,38 @@ function App() {
   let subtitle = useRef<HTMLHeadingElement>(null);
   const [modalIsOpen, setIsOpen] = useState(false);
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [supervisor, setSupervisor] = useState("");
-  const [limitDate, setLimitDate] = useState("");
+  // task state for form
+  const [task, setTask] = useState<FormValues>();
+
+  // list state
+  const [listTasks, setListTasks] = useState<FormValues[]>();
+
+  const { register,reset, formState:{errors}, handleSubmit } = useForm<FormValues>();
+
+  useEffect(() => {
+    setTask({ title:"", description:"", supervisor:"", date:"" });
+    setListTasks([{ title:"", description:"", supervisor:"", date:"" }]);
+  }, []); 
+
+  // effect runs when task state is updated
+  useEffect(() => {
+    // reset form with task data
+    reset(task);
+  }, [task,reset]);
 
   function openModal() {
     setIsOpen(true);
   }
 
-  // function afterOpenModal() {
-  //   // references are now sync'd and can be accessed.
-  //   subtitle.style.color = '#f00';
-  // }
-
-  function handleSubmit(event: FormEvent) {
-    event.preventDefault();
-    console.log("Title: ", title);
-    console.log("Description: ", description);
-    console.log("Supervisor: ", supervisor);
-    console.log("Limit Date: ", limitDate);
+  const handleSubmitAction:SubmitHandler<FormValues> = (data) => {    
+    console.log(data);
+    setListTasks(prevState => ([...prevState!,{
+      title:data.title,
+      description:data.description,
+      supervisor:data.supervisor,
+      date:data.date
+    }]))
+    reset();
     closeModal();
   }
 
@@ -48,53 +68,68 @@ function App() {
   return (
     <div>
       <button onClick={openModal}>Open Modal</button>
+      <div>
+        {
+          listTasks?.map( (listtask,index) => (
+            <div key={index}>
+              <h2>{listtask.title}</h2>
+              <div>
+                <p>{listtask.description}</p>
+                <p>{listtask.supervisor}</p>
+                <p>{listtask.date}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
       <Modal
         isOpen={modalIsOpen}
-        // onAfterOpen={afterOpenModal}
         onRequestClose={closeModal}
         style={customStyles}
         contentLabel="Example Modal"
       >
-        <h2 ref={subtitle}>Hello</h2>
+        <h2 ref={subtitle}>Hello From Modal</h2>
         <button onClick={closeModal}>close</button>
         <div>I am a modal</div>
-        <form onSubmit={handleSubmit}>
-        <label>
-            Title:
+        <form onSubmit={handleSubmit(handleSubmitAction)}>
+          <label>
+              Title:
+          </label>
             <input
               type="text"
-              value={title}
-              onChange={(event) => setTitle(event.target.value)}
+              {...register("title",{required:true,minLength:5})}
             />
-          </label>
-          <br />
-          <label>
-            Description:
+            {errors.title?.type === 'required' && <span>This is field is required</span>}
+            {errors.title?.type === 'minLength' && <span>Title is to short</span>}
+            <br />
+            <label>
+              Description:
+            </label>
             <textarea
-              value={description}
-              onChange={(event) => setDescription(event.target.value)}
+              {...register("description",{required:true,minLength:20})}
             />
-          </label>
-          <br />
-          <label>
-            Supervisor:
+              {errors.description?.type === 'required' && <span>This is field is required</span>}
+              {errors.description?.type === 'minLength' && <span>Description is to short</span>}
+            <br />
+            <label>
+              Supervisor:
+            </label>
             <input
               type="text"
-              value={supervisor}
-              onChange={(event) => setSupervisor(event.target.value)}
+              {...register("supervisor",{required:true})}
             />
-          </label>
-          <br />
-          <label>
-            Limit Date:
+              {errors.description?.type === 'required' && <span>This is field is required</span>}
+            <br />
+            <label>
+              Limit Date:
+            </label>
             <input
               type="date"
-              value={limitDate}
-              onChange={(event) => setLimitDate(event.target.value)}
+              {...register("date",{required:true})}
             />
-          </label>
-          <br />
-          <button type="submit">Submit</button>
+              {errors.date?.type === 'required' && <span>This is field is required</span>}
+            <br />
+            <button type="submit">Submit</button>
         </form>
       </Modal>
     </div>
