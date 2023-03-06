@@ -7,6 +7,7 @@ interface FormValues {
   description: string;
   supervisor: string;
   date: string;
+  completed:boolean;
 };
 
 const customStyles = {
@@ -42,7 +43,8 @@ function App() {
       title:"", 
       description:"", 
       supervisor:"", 
-      date:"" 
+      date:"",
+      completed:false 
     }
     setTask(initialState);
     //setListTasks([initialState]);
@@ -70,6 +72,7 @@ function App() {
           description: data.description,
           supervisor: data.supervisor,
           date: data.date,
+          completed: false,
         },
       ];
     }
@@ -82,6 +85,7 @@ function App() {
           description: data.description,
           supervisor: data.supervisor,
           date: data.date,
+          completed:false,
         },
       ];
     }
@@ -91,19 +95,26 @@ function App() {
   }
 
   const tasksCompletedHandler = (index:number) => {
-    setTasksCompleted(prevState => ([
-      ...prevState,
-      listTasks[index],
-    ]));
-    setListTasks( prevState => (prevState.filter((task,i) => i !== index)));
+    setListTasks(prevState => {
+      const updatedTasks = [...prevState];
+      updatedTasks[index].completed = true;
+      return updatedTasks.filter(task => !task.completed);
+    });
+  
+    setTasksCompleted(prevState => {
+      const completedTask = listTasks[index];
+      return [...(prevState || []), completedTask];
+    });
   }
 
   const notCompletedYetHandler = (index:number) => {
-    setListTasks(prevState => ([
-      ...prevState,
-      tasksCompleted[index],
-    ]));
-    setTasksCompleted( prevState => (prevState.filter((task,i) => i !== index)));
+    setTasksCompleted((prevCompleted) => {
+      const updatedCompleted = [...prevCompleted];
+      const taskToMove = updatedCompleted[index];
+      taskToMove.completed = false;
+      setListTasks((prevList) => [...prevList, taskToMove]);
+      return updatedCompleted.filter((task, i) => i !== index);
+    });
   }
 
   const deleteTaskHandler = (index: number, setTasks: Dispatch<SetStateAction<FormValues[]>>) => {
@@ -129,7 +140,7 @@ function App() {
                 <p>{listtask.date}</p>
               </div>
               <div>
-                <button onClick={()=>tasksCompletedHandler(index)}>Completed</button>
+                <input type="checkbox" onChange={() => tasksCompletedHandler(index)} checked={listtask.completed} />
                 <button onClick={() => deleteTaskHandler(index, setListTasks)}>Delete</button>
               </div>
             </div>
@@ -148,7 +159,7 @@ function App() {
                 <p>{taskCompleted.date}</p>
               </div>
               <div>
-                <button onClick={() => notCompletedYetHandler(index)}>Not Yet</button>
+              <input type="checkbox" onChange={() => notCompletedYetHandler(index)} checked={taskCompleted.completed} />
                 <button onClick={() => deleteTaskHandler(index, setTasksCompleted)}>Delete</button>
               </div>
             </div>
