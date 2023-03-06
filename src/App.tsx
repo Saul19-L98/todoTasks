@@ -1,4 +1,4 @@
-import React,{useState,useEffect,useRef} from 'react';
+import React,{useState,useEffect,useRef,Dispatch,SetStateAction} from 'react';
 import Modal from 'react-modal';
 import { useForm, SubmitHandler } from "react-hook-form";
 
@@ -30,13 +30,23 @@ function App() {
   const [task, setTask] = useState<FormValues>();
 
   // list state
-  const [listTasks, setListTasks] = useState<FormValues[]>();
+  const [listTasks, setListTasks] = useState<FormValues[]>([]);
 
-  const { register,reset, formState:{errors}, handleSubmit } = useForm<FormValues>();
+  //task completed
+  const [tasksCompleted,setTasksCompleted] = useState<FormValues[]>([]);
+
+  const { register, reset, formState:{errors}, handleSubmit } = useForm<FormValues>();
 
   useEffect(() => {
-    setTask({ title:"", description:"", supervisor:"", date:"" });
-    setListTasks([{ title:"", description:"", supervisor:"", date:"" }]);
+    const initialState: FormValues = { 
+      title:"", 
+      description:"", 
+      supervisor:"", 
+      date:"" 
+    }
+    setTask(initialState);
+    //setListTasks([initialState]);
+    //setTasksCompleted([initialState]);
   }, []); 
 
   // effect runs when task state is updated
@@ -51,14 +61,53 @@ function App() {
 
   const handleSubmitAction:SubmitHandler<FormValues> = (data) => {    
     console.log(data);
-    setListTasks(prevState => ([...prevState!,{
-      title:data.title,
-      description:data.description,
-      supervisor:data.supervisor,
-      date:data.date
-    }]))
+    setListTasks(prevState => {
+      // If prevState is empty, return a new array with only the new task
+    if (prevState.length === 0) {
+      return [
+        {
+          title: data.title,
+          description: data.description,
+          supervisor: data.supervisor,
+          date: data.date,
+        },
+      ];
+    }
+    // Otherwise, concatenate the prevState and the new task
+    else {
+      return [
+        ...prevState,
+        {
+          title: data.title,
+          description: data.description,
+          supervisor: data.supervisor,
+          date: data.date,
+        },
+      ];
+    }
+    })
     reset();
     closeModal();
+  }
+
+  const tasksCompletedHandler = (index:number) => {
+    setTasksCompleted(prevState => ([
+      ...prevState,
+      listTasks[index],
+    ]));
+    setListTasks( prevState => (prevState.filter((task,i) => i !== index)));
+  }
+
+  const notCompletedYetHandler = (index:number) => {
+    setListTasks(prevState => ([
+      ...prevState,
+      tasksCompleted[index],
+    ]));
+    setTasksCompleted( prevState => (prevState.filter((task,i) => i !== index)));
+  }
+
+  const deleteTaskHandler = (index: number, setTasks: Dispatch<SetStateAction<FormValues[]>>) => {
+    setTasks((prevTasks) => prevTasks.filter((task, i) => i !== index));
   }
 
   function closeModal() {
@@ -68,7 +117,8 @@ function App() {
   return (
     <div>
       <button onClick={openModal}>Open Modal</button>
-      <div>
+      <div id='section1'>
+        <h1>Task to do 😪</h1>
         {
           listTasks?.map( (listtask,index) => (
             <div key={index}>
@@ -77,6 +127,29 @@ function App() {
                 <p>{listtask.description}</p>
                 <p>{listtask.supervisor}</p>
                 <p>{listtask.date}</p>
+              </div>
+              <div>
+                <button onClick={()=>tasksCompletedHandler(index)}>Completed</button>
+                <button onClick={() => deleteTaskHandler(index, setListTasks)}>Delete</button>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+      <div id='section2'>
+        <h1>Tasks Completed 😎</h1>
+        {
+          tasksCompleted?.map( (taskCompleted,index) => (
+            <div key={index}>
+              <h2>{taskCompleted.title}</h2>
+              <div>
+                <p>{taskCompleted.description}</p>
+                <p>{taskCompleted.supervisor}</p>
+                <p>{taskCompleted.date}</p>
+              </div>
+              <div>
+                <button onClick={() => notCompletedYetHandler(index)}>Not Yet</button>
+                <button onClick={() => deleteTaskHandler(index, setTasksCompleted)}>Delete</button>
               </div>
             </div>
           ))
