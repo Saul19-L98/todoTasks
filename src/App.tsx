@@ -1,8 +1,10 @@
 import React,{useState,useEffect,useRef,Dispatch,SetStateAction} from 'react';
 import Modal from 'react-modal';
 import { useForm, SubmitHandler } from "react-hook-form";
+import { v4 as uuidv4 } from 'uuid';
 
 interface FormValues {
+  id:string;
   title: string;
   description: string;
   supervisor: string;
@@ -40,6 +42,7 @@ function App() {
 
   useEffect(() => {
     const initialState: FormValues = { 
+      id: "",
       title:"", 
       description:"", 
       supervisor:"", 
@@ -47,8 +50,6 @@ function App() {
       completed:false 
     }
     setTask(initialState);
-    //setListTasks([initialState]);
-    //setTasksCompleted([initialState]);
   }, []); 
 
   // effect runs when task state is updated
@@ -68,6 +69,7 @@ function App() {
     if (prevState.length === 0) {
       return [
         {
+          id: data.id = uuidv4(),
           title: data.title,
           description: data.description,
           supervisor: data.supervisor,
@@ -81,6 +83,7 @@ function App() {
       return [
         ...prevState,
         {
+          id: data.id = uuidv4(),
           title: data.title,
           description: data.description,
           supervisor: data.supervisor,
@@ -94,21 +97,23 @@ function App() {
     closeModal();
   }
 
-  const tasksCompletedHandler = (index:number) => {
+  const tasksCompletedHandler = (id:string) => {
     setListTasks(prevState => {
+      const index = prevState.findIndex(task => task.id === id);
       const updatedTasks = [...prevState];
       updatedTasks[index].completed = true;
       return updatedTasks.filter(task => !task.completed);
     });
   
     setTasksCompleted(prevState => {
-      const completedTask = listTasks[index];
-      return [...(prevState || []), completedTask];
+      const completedTask = listTasks.find(task => task.id === id);
+      return [...(prevState || []), completedTask!];
     });
   }
 
-  const notCompletedYetHandler = (index:number) => {
+  const notCompletedYetHandler = (id:string) => {
     setTasksCompleted((prevCompleted) => {
+      const index = prevCompleted.findIndex(task => task.id === id);
       const updatedCompleted = [...prevCompleted];
       const taskToMove = updatedCompleted[index];
       taskToMove.completed = false;
@@ -117,8 +122,8 @@ function App() {
     });
   }
 
-  const deleteTaskHandler = (index: number, setTasks: Dispatch<SetStateAction<FormValues[]>>) => {
-    setTasks((prevTasks) => prevTasks.filter((task, i) => i !== index));
+  const deleteTaskHandler = (id: string, setTasks: Dispatch<SetStateAction<FormValues[]>>) => {
+    setTasks((prevTasks) => prevTasks.filter(task => task.id !== id));
   }
 
   function closeModal() {
@@ -131,17 +136,17 @@ function App() {
       <div id='section1'>
         <h1>Task to do 😪</h1>
         {
-          listTasks?.map( (listtask,index) => (
-            <div key={index}>
-              <h2>{listtask.title}</h2>
+          listTasks?.map( (listTask) => (
+            <div key={listTask.id}>
+              <h2>{listTask.title}</h2>
               <div>
-                <p>{listtask.description}</p>
-                <p>{listtask.supervisor}</p>
-                <p>{listtask.date}</p>
+                <p>{listTask.description}</p>
+                <p>{listTask.supervisor}</p>
+                <p>{listTask.date}</p>
               </div>
               <div>
-                <input type="checkbox" onChange={() => tasksCompletedHandler(index)} checked={listtask.completed} />
-                <button onClick={() => deleteTaskHandler(index, setListTasks)}>Delete</button>
+                <input type="checkbox" onChange={() => tasksCompletedHandler(listTask.id)} checked={listTask.completed} />
+                <button onClick={() => deleteTaskHandler(listTask.id, setListTasks)}>Delete</button>
               </div>
             </div>
           ))
@@ -159,8 +164,8 @@ function App() {
                 <p>{taskCompleted.date}</p>
               </div>
               <div>
-              <input type="checkbox" onChange={() => notCompletedYetHandler(index)} checked={taskCompleted.completed} />
-                <button onClick={() => deleteTaskHandler(index, setTasksCompleted)}>Delete</button>
+              <input type="checkbox" onChange={() => notCompletedYetHandler(taskCompleted.id)} checked={taskCompleted.completed} />
+                <button onClick={() => deleteTaskHandler(taskCompleted.id, setTasksCompleted)}>Delete</button>
               </div>
             </div>
           ))
