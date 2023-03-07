@@ -29,7 +29,7 @@ function App() {
   let subtitle = useRef<HTMLHeadingElement>(null);
   const [modalIsOpen, setIsOpen] = useState(false);
 
-  // task state for form
+  // task state to reset the form to its initial values.
   const [task, setTask] = useState<FormValues>();
 
   // list state

@@ -1,7 +1,5 @@
 import {create} from 'zustand';
-import { v4 as uuidv4 } from 'uuid';
-
-interface FormValues {
+interface Task {
   id: string;
   title: string;
   description: string;
@@ -11,28 +9,30 @@ interface FormValues {
 }
 
 interface TaskStore {
-  listTasks: FormValues[];
-  tasksCompleted: FormValues[];
-  addTask: (task: FormValues) => void;
-  // completeTask: (id: string) => void;
-  // unCompleteTask: (id: string) => void;
-  // deleteTask: (id: string) => void;
+  tasks: Task[];
+  addTask: (task: Task) => void;
+  completeTask: (id: string) => void;
+  incompleteTask: (id: string) => void;
+  deleteTask: (id: string) => void;
 }
 
-export const useTasksStore = create<TaskStore>((set, get) => ({
-  listTasks: [],
-  tasksCompleted: [],
-
-  addTask: (task:FormValues) =>
+export const useTaskStore = create<TaskStore>((set) => ({
+  tasks: [],
+  addTask: (task) => set((state) => ({ tasks: [...state.tasks, task] })),
+  completeTask: (id) =>
     set((state) => ({
-      listTasks: [
-        ...state.listTasks,
-        {
-          ...task,
-          id: task.id || uuidv4(),
-        },
-      ],
+      tasks: state.tasks.map((task) =>
+        task.id === id ? { ...task, completed: true } : task
+      ),
     })),
-
-  
+  incompleteTask: (id) =>
+    set((state) => ({
+      tasks: state.tasks.map((task) =>
+        task.id === id ? { ...task, completed: false } : task
+      ),
+    })),
+  deleteTask: (id) =>
+    set((state) => ({
+      tasks: state.tasks.filter((task) => task.id !== id),
+    })),
 }));
