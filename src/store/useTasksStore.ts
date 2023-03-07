@@ -11,7 +11,7 @@ interface Task {
 interface TaskStore {
   tasks: Task[];
   addTask: (task: Task) => void;
-  completeTask: (id: string) => void;
+  completedTask: (id: string) => void;
   incompleteTask: (id: string) => void;
   deleteTask: (id: string) => void;
 }
@@ -19,7 +19,7 @@ interface TaskStore {
 export const useTaskStore = create<TaskStore>((set) => ({
   tasks: [],
   addTask: (task) => set((state) => ({ tasks: [...state.tasks, task] })),
-  completeTask: (id) =>
+  completedTask: (id) =>
     set((state) => ({
       tasks: state.tasks.map((task) =>
         task.id === id ? { ...task, completed: true } : task
