@@ -33,11 +33,8 @@ function FormModal ({ handleCloseModal }:FormModalProps){
         // reset form with task data
         reset(task);
     }, [task,reset]);
-    
-    const subtitle = useRef<HTMLHeadingElement>(null);
 
     const handleSubmitAction:SubmitHandler<Task> = (data) => {    
-        console.log(data);
         const newTask = {
             ...data,
             id: uuidv4(),
@@ -48,49 +45,50 @@ function FormModal ({ handleCloseModal }:FormModalProps){
         handleCloseModal();
     }
     return (
-        <div>
-            <h2 ref={subtitle}>Hello From Modal</h2>
-            <button onClick={handleCloseModal}>close</button>
-            <div>I am a modal</div>
-            <form onSubmit={handleSubmit(handleSubmitAction)}>
-                <label>
-                    Title:
-                </label>
-                <input
-                    type="text"
-                    {...register("title",{required:true,minLength:5})}
-                />
-                {errors.title?.type === 'required' && <span>This is field is required</span>}
-                {errors.title?.type === 'minLength' && <span>Title is to short</span>}
-                <br />
-                <label>
-                    Description:
-                </label>
-                <textarea
-                    {...register("description",{required:true,minLength:20})}
-                />
-                    {errors.description?.type === 'required' && <span>This is field is required</span>}
-                    {errors.description?.type === 'minLength' && <span>Description is to short</span>}
-                <br />
-                <label>
-                    Supervisor:
-                </label>
-                <input
-                    type="text"
-                    {...register("supervisor",{required:true})}
-                />
-                    {errors.description?.type === 'required' && <span>This is field is required</span>}
-                <br />
-                <label>
-                    Limit Date:
-                </label>
-                <input
-                    type="date"
-                    {...register("date",{required:true})}
-                />
-                    {errors.date?.type === 'required' && <span>This is field is required</span>}
-                <br />
-                <button type="submit">Submit</button>
+        <div className="w-full">
+            <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={handleSubmit(handleSubmitAction)}>
+                <div className="flex justify-end">
+                    <button className="rounded-full p-2 bg-gray-200 text-gray-600 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300" onClick={handleCloseModal}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M13.414 6l-3.293 3.293L6.828 6 6 6.828l3.293 3.293L6 13.414l.828.828 3.293-3.293 3.293 3.293.828-.828-3.293-3.293 3.293-3.293-.828-.828z" clipRule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
+                        Title
+                    </label>
+                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="title" type="text" placeholder="Title" {...register("title",{required:true,minLength:5})}/>
+                    {errors.title?.type === 'required' && <span className="text-red-500 text-xs italic">This field is required</span>}
+                    {errors.title?.type === 'minLength' && <span className="text-red-500 text-xs italic">Title is too short</span>}
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
+                        Description
+                    </label>
+                    <textarea className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="description" placeholder="Description" {...register("description",{required:true,minLength:20})}></textarea>
+                    {errors.description?.type === 'required' && <span className="text-red-500 text-xs italic">This field is required</span>}
+                    {errors.description?.type === 'minLength' && <span className="text-red-500 text-xs italic">Description is too short</span>}
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="supervisor">
+                        Supervisor
+                    </label>
+                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="supervisor" type="text" placeholder="Supervisor" {...register("supervisor",{required:true})}/>
+                    {errors.supervisor?.type === 'required' && <span className="text-red-500 text-xs italic">This field is required</span>}
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="date">
+                        Limit Date
+                    </label>
+                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="date" type="date" {...register("date",{required:true})}/>
+                    {errors.date?.type === 'required' && <span className="text-red-500 text-xs italic">This field is required</span>}
+                </div>
+                <div className="flex justify-center">
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                        Create
+                    </button>
+                </div>
             </form>
         </div>
     )
