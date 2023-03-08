@@ -1,4 +1,4 @@
-import ListTask from './ListTask';
+import List from './List';
 import { useTaskStore } from '../store/useTasksStore';
 
 interface TasksViewProps{
@@ -39,7 +39,7 @@ function TasksView({handleOpenModal}:TasksViewProps){
                         }
                         return(
                             (
-                                <ListTask key={task.id} task={task} />
+                                <List key={task.id} task={task} />
                             )
                         )
                     })
@@ -53,7 +53,7 @@ function TasksView({handleOpenModal}:TasksViewProps){
                             return null;
                         }
                         return (
-                            <ListTask key={task.id} task={task} />
+                            <List key={task.id} task={task} />
                         )
                     })
                 }

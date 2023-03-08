@@ -1,11 +1,11 @@
 import { Task } from "../interfaces/interface";
 import { useTaskStore } from "../store/useTasksStore";
 
-interface LisTaskProps{
+interface ListProps{
     task:Task;
 }
 
-function ListTask({task}:LisTaskProps){
+function List({task}:ListProps){
 
     const {deleteTask,toggleCompleted} = useTaskStore();
 
@@ -45,4 +45,4 @@ function ListTask({task}:LisTaskProps){
     )
 }
 
-export default ListTask;
+export default List;
