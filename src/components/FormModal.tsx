@@ -47,13 +47,13 @@ function FormModal ({ handleCloseModal }:FormModalProps){
     return (
         <div className="w-full">
             <form id='myForm' className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={handleSubmit(handleSubmitAction)}>
-                <div className="flex justify-end">
-                    <button form='myForm' className="rounded-full p-2 bg-gray-200 text-gray-600 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300" onClick={handleCloseModal}>
+                {/* <div className="flex justify-end">
+                    <button formTarget='myForm' className="rounded-full p-2 bg-gray-200 text-gray-600 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300" onClick={handleCloseModal}>
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M13.414 6l-3.293 3.293L6.828 6 6 6.828l3.293 3.293L6 13.414l.828.828 3.293-3.293 3.293 3.293.828-.828-3.293-3.293 3.293-3.293-.828-.828z" clipRule="evenodd" />
                         </svg>
                     </button>
-                </div>
+                </div> */}
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
                         Title

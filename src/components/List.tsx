@@ -49,11 +49,11 @@ function List({task}:ListProps){
                 </div>
             </div>
             <div className="flex justify-between items-center p-4">
-                <input type="checkbox" onChange={() => tasksCompletedHandler(task.id)} checked={task.completed} className="h-6 w-6 rounded-full bg-white border-gray-400 border-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500" />
+            <input type="checkbox" onChange={() => tasksCompletedHandler(task.id)} checked={task.completed} className="h-6 w-6 rounded-full bg-white border-gray-400 border-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 hover:scale-110 cursor-pointer"/>
                 <button onClick={() => deleteTaskHandler(task.id)} className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded transition-shadow duration-300">
-                <svg className="h-6 w-6 inline-block align-middle mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 12H4"></path>
-                </svg>
+                    <svg className="h-6 w-6 inline-block align-middle mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 12H4"></path>
+                    </svg>
                 Delete
                 </button>
             </div>
