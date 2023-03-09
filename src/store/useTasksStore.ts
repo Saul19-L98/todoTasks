@@ -1,7 +1,8 @@
-import {create} from 'zustand';
+import {create, StateCreator} from 'zustand';
+import {persist,devtools} from 'zustand/middleware';
 import { TaskStore } from '../interfaces/interface';
 
-export const useTaskStore = create<TaskStore>((set) => ({
+const taskStore: StateCreator<TaskStore> = (set) => ({
   tasks: [],
   addTask: (task) => set((state) => ({ tasks: [...state.tasks, task] })),
   toggleCompleted: (id) =>
@@ -14,4 +15,13 @@ export const useTaskStore = create<TaskStore>((set) => ({
     set((state) => ({
       tasks: state.tasks.filter((task) => task.id !== id),
     })),
-}));
+});
+
+export const useTaskStore = create<TaskStore>()(
+  persist(
+    devtools((...a) => ({
+      ...taskStore(...a),
+    })),
+    { name: "Tasks-persist" }
+  )
+);

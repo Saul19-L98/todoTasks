@@ -19,10 +19,11 @@ function TasksView({handleOpenModal}:TasksViewProps){
             Add new Task
         </button>
         </div>
-        <div className='flex justify-center'>
+        <div className='flex justify-center h-screen'>
         {
             tasks.length === 0 && (
-                <div className="bg-gray-200 rounded-lg p-4 w-96 h-48">
+                <div className="bg-gray-200 rounded-lg p-4 w-96 h-48 flex flex-col justify-center items-center">
+                <span className="text-5xl mb-4">😪</span>
                     <p className="text-lg font-bold text-center text-gray-600">Please create a task</p>
                 </div>
             )
@@ -31,7 +32,7 @@ function TasksView({handleOpenModal}:TasksViewProps){
         {tasks.length > 0 &&
         (<div className="grid grid-cols-1 gap-4 p-4 rounded-lg md:grid-cols-2">
             <div id="section1" className="bg-white p-4 rounded-lg">
-                <h1 className="text-2xl font-bold mb-4">Task to do 😪</h1>
+                <h1 className="text-2xl font-bold mb-4">Tasks to do 😪</h1>
                 {
                     tasks?.map( (task) => {
                         if(task.completed){

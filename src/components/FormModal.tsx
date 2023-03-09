@@ -46,8 +46,14 @@ function FormModal ({ handleCloseModal }:FormModalProps){
     }
     return (
         <div className="w-full">
-            <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={handleSubmit(handleSubmitAction)}>
-                
+            <form id='myForm' className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={handleSubmit(handleSubmitAction)}>
+                <div className="flex justify-end">
+                    <button form='myForm' className="rounded-full p-2 bg-gray-200 text-gray-600 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300" onClick={handleCloseModal}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M13.414 6l-3.293 3.293L6.828 6 6 6.828l3.293 3.293L6 13.414l.828.828 3.293-3.293 3.293 3.293.828-.828-3.293-3.293 3.293-3.293-.828-.828z" clipRule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
                         Title
@@ -66,7 +72,7 @@ function FormModal ({ handleCloseModal }:FormModalProps){
                 </div>
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="supervisor">
-                        Supervisor
+                        Assigned person
                     </label>
                     <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="supervisor" type="text" placeholder="Supervisor" {...register("supervisor",{required:true})}/>
                     {errors.supervisor?.type === 'required' && <span className="text-red-500 text-xs italic">This field is required</span>}
@@ -79,7 +85,7 @@ function FormModal ({ handleCloseModal }:FormModalProps){
                     {errors.date?.type === 'required' && <span className="text-red-500 text-xs italic">This field is required</span>}
                 </div>
                 <div className="flex justify-center">
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                    <button form='myForm' className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
                         Create
                     </button>
                 </div>
